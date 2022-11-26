@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { ReactNode } from "react";
+import { useDrawerContext } from "../../contexts";
 
 interface ISidebarProps {
   children: ReactNode;
@@ -21,9 +22,15 @@ export const Sidebar = ({ children }: ISidebarProps) => {
   const theme = useTheme(); //Acesssa o Tema da aplicação MUI
   const smDown = useMediaQuery(theme.breakpoints.down("sm")); //Verifica se o tamanho da tela é menor que sm
 
+  const { isDrawerOpen, toggleDrawerOpen } = useDrawerContext();
+
   return (
     <>
-      <Drawer open={true} variant={smDown ? "temporary" : "permanent"}>
+      <Drawer
+        open={isDrawerOpen}
+        variant={smDown ? "temporary" : "permanent"}
+        onClose={toggleDrawerOpen}
+      >
         <Box
           width={theme.spacing(28)}
           height="100%"
