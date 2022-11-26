@@ -6,25 +6,27 @@ import {
   useMemo,
   useState,
 } from "react";
-import { Box, ThemeProvider } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
+import { Box } from "@mui/system";
 import { DarkTheme, LightTheme } from "../../shared/themes";
 
 interface ThemeContextData {
   themeName: "light" | "dark";
   toggleTheme: () => void;
-}
+};
 
 interface IAppThemeProviderProps {
   children: ReactNode;
-}
+};
 
 const ThemeContext = createContext({} as ThemeContextData);
 
 export const useAppThemeContext = () => {
   return useContext(ThemeContext);
-}
+};
 
-export const AppThemeProvider: React.FC<IAppThemeProviderProps> = ({
+export const 
+AppThemeProvider: React.FC<IAppThemeProviderProps> = ({
   children,
 }) => {
   const [themeName, setThemeName] = useState<"light" | "dark">("light");
