@@ -10,19 +10,54 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { useMatch, useNavigate, useResolvedPath } from "react-router-dom";
 import { Box } from "@mui/system";
-import { ReactNode } from "react";
+
 import { useDrawerContext } from "../../contexts";
 
-interface ISidebarProps {
-  children: ReactNode;
+interface IListItemLinkProps {
+  to: string;
+  icon: string;
+  label: string;
+  onClick: (() => void) | undefined;
 }
 
-export const Sidebar = ({ children }: ISidebarProps) => {
-  const theme = useTheme(); //Acesssa o Tema da aplicação MUI
-  const smDown = useMediaQuery(theme.breakpoints.down("sm")); //Verifica se o tamanho da tela é menor que sm
+interface ISidebarProps {
+  children: React.ReactNode;
+}
 
-  const { isDrawerOpen, toggleDrawerOpen } = useDrawerContext();
+const ListItemLink: React.FC<IListItemLinkProps> = ({
+  to,
+  icon,
+  label,
+  onClick,
+}) => {
+  const navigate = useNavigate();
+
+  //Esses hooks são usados para verificar se a rota atual é a mesma que a rota do item do menu
+  const resolvedPath = useResolvedPath(to);
+  const match = useMatch({ path: resolvedPath.pathname, end: false });
+
+  const handleClick = () => {
+    navigate(to);
+    onClick?.();
+  };
+
+  return (
+    <ListItemButton selected={!!match} onClick={handleClick}>
+      <ListItemIcon>
+        <Icon>{icon}</Icon>
+      </ListItemIcon>
+      <ListItemText primary={label} />
+    </ListItemButton>
+  );
+};
+
+export const Sidebar: React.FC<ISidebarProps> = ({ children }) => {
+  const theme = useTheme();
+  const smDown = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const { isDrawerOpen, drawerOptions, toggleDrawerOpen } = useDrawerContext();
 
   return (
     <>
@@ -45,11 +80,7 @@ export const Sidebar = ({ children }: ISidebarProps) => {
             justifyContent="center"
           >
             <Avatar
-              sx={{
-                width: theme.spacing(12),
-                height: theme.spacing(12),
-              }}
-              alt="Avatar do usuário"
+              sx={{ height: theme.spacing(12), width: theme.spacing(12) }}
               src="https://github.com/chrmartins.png"
             />
           </Box>
@@ -58,12 +89,15 @@ export const Sidebar = ({ children }: ISidebarProps) => {
 
           <Box flex={1}>
             <List component="nav">
-              <ListItemButton>
-                <ListItemIcon>
-                  <Icon>home</Icon>
-                </ListItemIcon>
-                <ListItemText primary="Página inicial" />
-              </ListItemButton>
+              {drawerOptions.map((drawerOption) => (
+                <ListItemLink
+                  to={drawerOption.path}
+                  key={drawerOption.path}
+                  icon={drawerOption.icon}
+                  label={drawerOption.label}
+                  onClick={smDown ? toggleDrawerOpen : undefined}
+                />
+              ))}
             </List>
           </Box>
         </Box>
