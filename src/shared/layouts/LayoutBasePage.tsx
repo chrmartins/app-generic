@@ -1,12 +1,12 @@
 import {
   Icon,
+  Box,
   IconButton,
   Theme,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { Box } from "@mui/system";
 
 import { useDrawerContext } from "../contexts";
 
